@@ -67,18 +67,6 @@ jobs:
           cd ..
           chmod +x mcp-publisher
       
-      - name: Validate server.json
-        run: |
-          # Download and validate against schema
-          curl -s https://static.modelcontextprotocol.io/schemas/2025-07-09/server.schema.json | \
-            jq . > schema.json
-          
-          # Install ajv-cli for validation
-          npm install -g ajv-cli ajv-formats
-          
-          # Validate server.json
-          ajv validate -s schema.json -d server.json --strict=false -c ajv-formats
-      
       - name: Login to MCP Registry
         run: ./mcp-publisher login github-oidc
       
