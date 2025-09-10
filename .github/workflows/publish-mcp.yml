@@ -32,7 +32,23 @@ jobs:
         run: uv build
       
       - name: Publish to PyPI
-        run: uv publish --token ${{ secrets.PYPI_TOKEN }}
+        id: pypi-publish
+        continue-on-error: true
+        run: |
+          uv publish --token ${{ secrets.PYPI_TOKEN }} 2>&1 | tee publish_output.txt
+          exit_code=${PIPESTATUS[0]}
+          if [ $exit_code -eq 0 ]; then
+            echo "✅ Successfully published to PyPI"
+            echo "pypi_status=success" >> $GITHUB_OUTPUT
+          elif grep -q "already exists" publish_output.txt || grep -q "File already exists" publish_output.txt; then
+            echo "⚠️ Package version already exists on PyPI, skipping..."
+            echo "pypi_status=already_exists" >> $GITHUB_OUTPUT
+            exit 0
+          else
+            echo "❌ Failed to publish to PyPI"
+            echo "pypi_status=failed" >> $GITHUB_OUTPUT
+            exit 1
+          fi
         env:
           UV_PUBLISH_TOKEN: ${{ secrets.PYPI_TOKEN }}
       
