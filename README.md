@@ -405,3 +405,6 @@ To run the server from a local development environment, use the following config
 ## License
 
 This MCP server is licensed under the MIT License. This means you are free to use, modify, and distribute the software, subject to the terms and conditions of the MIT License. For more details, please see the LICENSE file in the project repository.
+
+##
+mcp-name: io.github.motherduckdb/mcp-server-motherduck
