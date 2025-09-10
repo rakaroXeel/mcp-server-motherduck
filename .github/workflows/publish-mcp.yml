@@ -1,0 +1,70 @@
+name: Publish to PyPI and MCP Registry
+
+on:
+  workflow_dispatch:  # Allows manual triggering from GitHub Actions UI
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write  # Required for OIDC authentication
+      contents: read
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+      
+      - name: Install dependencies
+        run: uv sync --all-extras --dev
+      
+      - name: Build package
+        run: uv build
+      
+      - name: Publish to PyPI
+        run: uv publish --token ${{ secrets.PYPI_TOKEN }}
+        env:
+          UV_PUBLISH_TOKEN: ${{ secrets.PYPI_TOKEN }}
+      
+      - name: Setup Node.js (for schema validation)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Install MCP Publisher
+        run: |
+          # Clone and build the MCP publisher
+          git clone https://github.com/modelcontextprotocol/registry publisher-repo
+          cd publisher-repo
+          make publisher
+          cp cmd/publisher/bin/mcp-publisher ../mcp-publisher
+          cd ..
+          chmod +x mcp-publisher
+      
+      - name: Validate server.json
+        run: |
+          # Download and validate against schema
+          curl -s https://static.modelcontextprotocol.io/schemas/2025-07-09/server.schema.json | \
+            jq . > schema.json
+          
+          # Install ajv-cli for validation
+          npm install -g ajv-cli ajv-formats
+          
+          # Validate server.json
+          ajv validate -s schema.json -d server.json --strict=false -c ajv-formats
+      
+      - name: Login to MCP Registry
+        run: ./mcp-publisher login github-oidc
+      
+      - name: Publish to MCP Registry
+        run: ./mcp-publisher publish
