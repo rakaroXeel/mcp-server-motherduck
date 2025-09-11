@@ -36,47 +36,20 @@ class DatabaseClient:
 
         logger.info(f"🔌 Connecting to {self.db_type} database")
 
-        if self.db_type in ["duckdb", "s3"] and self._read_only:
+        # S3 databases don't support read-only mode
+        if self.db_type == "s3" and self._read_only:
+            raise ValueError("Read-only mode is not supported for S3 databases")
+
+        if self.db_type == "duckdb" and self._read_only:
             # check that we can connect, issue a `select 1` and then close + return None
             try:
-                if self.db_type == "s3":
-                    # For S3, we need to create an in-memory connection and configure S3
-                    conn = duckdb.connect(':memory:')
-                    import io
-                    from contextlib import redirect_stdout, redirect_stderr
-                    null_file = io.StringIO()
-                    with redirect_stdout(null_file), redirect_stderr(null_file):
-                        try:
-                            conn.execute("INSTALL httpfs;")
-                        except:
-                            pass  # Extension might already be installed
-                        conn.execute("LOAD httpfs;")
-                    
-                    aws_access_key = os.environ.get('AWS_ACCESS_KEY_ID')
-                    aws_secret_key = os.environ.get('AWS_SECRET_ACCESS_KEY')
-                    aws_region = os.environ.get('AWS_DEFAULT_REGION', 'us-east-1')
-                    
-                    if aws_access_key and aws_secret_key:
-                        conn.execute(f"""
-                            CREATE SECRET IF NOT EXISTS s3_secret (
-                                TYPE S3,
-                                KEY_ID '{aws_access_key}',
-                                SECRET '{aws_secret_key}',
-                                REGION '{aws_region}'
-                            );
-                        """)
-                    
-                    # Always attach S3 as READ_ONLY since that's the only supported mode
-                    conn.execute(f"ATTACH '{self.db_path}' AS s3db (READ_ONLY);")
-                    conn.execute("USE s3db;")
-                else:
-                    conn = duckdb.connect(
-                        self.db_path,
-                        config={
-                            "custom_user_agent": f"mcp-server-motherduck/{SERVER_VERSION}"
-                        },
-                        read_only=self._read_only,
-                    )
+                conn = duckdb.connect(
+                    self.db_path,
+                    config={
+                        "custom_user_agent": f"mcp-server-motherduck/{SERVER_VERSION}"
+                    },
+                    read_only=self._read_only,
+                )
                 conn.execute("SELECT 1")
                 conn.close()
                 return None
