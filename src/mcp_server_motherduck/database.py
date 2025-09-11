@@ -176,39 +176,12 @@ class DatabaseClient:
         null_file = io.StringIO()
         with redirect_stdout(null_file), redirect_stderr(null_file):
             if self.conn is None:
-                # open short lived readonly connection, run query, close connection, return result
-                if self.db_type == "s3":
-                    # For S3, recreate the connection with all S3 configuration
-                    conn = duckdb.connect(':memory:')
-                    try:
-                        conn.execute("INSTALL httpfs;")
-                    except:
-                        pass  # Extension might already be installed
-                    conn.execute("LOAD httpfs;")
-                    
-                    aws_access_key = os.environ.get('AWS_ACCESS_KEY_ID')
-                    aws_secret_key = os.environ.get('AWS_SECRET_ACCESS_KEY')
-                    aws_region = os.environ.get('AWS_DEFAULT_REGION', 'us-east-1')
-                    
-                    if aws_access_key and aws_secret_key:
-                        conn.execute(f"""
-                            CREATE SECRET IF NOT EXISTS s3_secret (
-                                TYPE S3,
-                                KEY_ID '{aws_access_key}',
-                                SECRET '{aws_secret_key}',
-                                REGION '{aws_region}'
-                            );
-                        """)
-                    
-                    # Always attach S3 as READ_ONLY since that's the only supported mode
-                    conn.execute(f"ATTACH '{self.db_path}' AS s3db (READ_ONLY);")
-                    conn.execute("USE s3db;")
-                else:
-                    conn = duckdb.connect(
-                        self.db_path,
-                        config={"custom_user_agent": f"mcp-server-motherduck/{SERVER_VERSION}"},
-                        read_only=self._read_only,
-                    )
+                # open short lived readonly connection for local DuckDB, run query, close connection, return result
+                conn = duckdb.connect(
+                    self.db_path,
+                    config={"custom_user_agent": f"mcp-server-motherduck/{SERVER_VERSION}"},
+                    read_only=self._read_only,
+                )
                 q = conn.execute(query)
             else:
                 q = self.conn.execute(query)
