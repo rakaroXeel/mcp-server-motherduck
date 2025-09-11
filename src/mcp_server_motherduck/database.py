@@ -169,22 +169,16 @@ class DatabaseClient:
         return db_path, "duckdb"
 
     def _execute(self, query: str) -> str:
-        import io
-        from contextlib import redirect_stdout, redirect_stderr
-        
-        # Suppress any potential stdout/stderr output during execution
-        null_file = io.StringIO()
-        with redirect_stdout(null_file), redirect_stderr(null_file):
-            if self.conn is None:
-                # open short lived readonly connection for local DuckDB, run query, close connection, return result
-                conn = duckdb.connect(
-                    self.db_path,
-                    config={"custom_user_agent": f"mcp-server-motherduck/{SERVER_VERSION}"},
-                    read_only=self._read_only,
-                )
-                q = conn.execute(query)
-            else:
-                q = self.conn.execute(query)
+        if self.conn is None:
+            # open short lived readonly connection for local DuckDB, run query, close connection, return result
+            conn = duckdb.connect(
+                self.db_path,
+                config={"custom_user_agent": f"mcp-server-motherduck/{SERVER_VERSION}"},
+                read_only=self._read_only,
+            )
+            q = conn.execute(query)
+        else:
+            q = self.conn.execute(query)
 
         out = tabulate(
             q.fetchall(),
