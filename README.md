@@ -361,34 +361,12 @@ You can connect to DuckDB databases stored on Amazon S3 by providing an S3 URL a
 }
 ```
 
-For read-only access to S3 databases:
-
-```json
-{
-  "mcpServers": {
-    "mcp-server-motherduck": {
-      "command": "uvx",
-      "args": [
-        "mcp-server-motherduck",
-        "--db-path",
-        "s3://your-bucket/path/to/database.duckdb",
-        "--read-only"
-      ],
-      "env": {
-        "AWS_ACCESS_KEY_ID": "<your_key>",
-        "AWS_SECRET_ACCESS_KEY": "<your_secret>",
-        "AWS_DEFAULT_REGION": "us-west-2"
-      }
-    }
-  }
-}
-```
 
 **Note**: For S3 connections:
 - AWS credentials must be provided via environment variables (`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, and optionally `AWS_DEFAULT_REGION`)
 - The S3 database is attached to an in-memory DuckDB instance
 - The httpfs extension is automatically installed and configured for S3 access
-- Both read and write operations are supported (use `--read-only` flag for read-only access)
+- Both read and write operations are supported
 
 ## Example Queries
 
