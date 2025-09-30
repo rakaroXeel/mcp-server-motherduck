@@ -7,13 +7,13 @@
     "url": "https://github.com/motherduckdb/mcp-server-motherduck",
     "source": "github"
   },
-  "version": "0.6.4",
+  "version": "0.7.0",
   "packages": [
     {
       "registry_type": "pypi",
       "registry_base_url": "https://pypi.org",
       "identifier": "mcp-server-motherduck",
-      "version": "0.6.4",
+      "version": "0.7.0",
       "transport": {
         "type": "stdio"
       },
