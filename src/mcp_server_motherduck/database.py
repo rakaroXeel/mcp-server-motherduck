@@ -182,7 +182,7 @@ class DatabaseClient:
 
         out = tabulate(
             q.fetchall(),
-            headers=[d[0] + "\n" + d[1] for d in q.description],
+            headers=[d[0] + "\n" + str(d[1]) for d in q.description],
             tablefmt="pretty",
         )
 
