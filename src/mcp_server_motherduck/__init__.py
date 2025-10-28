@@ -97,6 +97,9 @@ def main(
                 await app.run(read_stream, write_stream, init_opts)
             return Response()
 
+        async def handle_health(request):
+            return Response("OK", status_code=200)
+
         logger.info(
             f"🦆 Connect to MotherDuck MCP Server at \033[1m\033[36mhttp://{SERVER_LOCALHOST}:{port}/sse\033[0m"
         )
@@ -104,6 +107,7 @@ def main(
         starlette_app = Starlette(
             debug=True,
             routes=[
+                Route("/health", endpoint=handle_health, methods=["GET"]),
                 Route("/sse", endpoint=handle_sse, methods=["GET"]),
                 Mount("/messages/", app=sse.handle_post_message),
             ],
@@ -153,6 +157,9 @@ def main(
                         "🦆 MotherDuck MCP Server in \033[32mhttp-streamable\033[0m mode shutting down"
                     )
 
+        async def handle_health(request):
+            return Response("OK", status_code=200)
+
         logger.info(
             f"🦆 Connect to MotherDuck MCP Server at \033[1m\033[36mhttp://{SERVER_LOCALHOST}:{port}/mcp\033[0m"
         )
@@ -161,6 +168,7 @@ def main(
         starlette_app = Starlette(
             debug=True,
             routes=[
+                Route("/health", endpoint=handle_health, methods=["GET"]),
                 Mount("/mcp", app=handle_streamable_http),
             ],
             lifespan=lifespan,

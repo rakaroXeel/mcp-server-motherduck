@@ -414,8 +414,8 @@ python -m mcp_server_motherduck --transport stream --host 0.0.0.0 --port $PORT
 
 Notes:
 
-- The stream transport serves the HTTP endpoint at `/mcp`. Render’s health check can target `/mcp` (a 405 for GET is acceptable).
-- Alternatively, SSE transport is available at `/sse`:
+- The stream transport serves the HTTP endpoint at `/mcp`. A dedicated `/health` endpoint returns 200 OK for health checks.
+- Alternatively, SSE transport is available at `/sse` (also includes `/health`):
 
 ```bash
 python -m mcp_server_motherduck --transport sse --host 0.0.0.0 --port $PORT
