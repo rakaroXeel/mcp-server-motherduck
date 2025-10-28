@@ -15,6 +15,11 @@ logging.basicConfig(
 @click.command()
 @click.option("--port", default=8000, help="Port to listen on for SSE")
 @click.option(
+    "--host",
+    default=SERVER_LOCALHOST,
+    help="Host to bind for HTTP transports",
+)
+@click.option(
     "--transport",
     type=click.Choice(["stdio", "sse", "stream"]),
     default="stdio",
@@ -53,6 +58,7 @@ logging.basicConfig(
 )
 def main(
     port,
+    host,
     transport,
     db_path,
     motherduck_token,
@@ -107,7 +113,7 @@ def main(
 
         uvicorn.run(
             starlette_app,
-            host=SERVER_LOCALHOST,
+            host=host,
             port=port,
             log_config=UVICORN_LOGGING_CONFIG,
         )
@@ -164,7 +170,7 @@ def main(
 
         uvicorn.run(
             starlette_app,
-            host=SERVER_LOCALHOST,
+            host=host,
             port=port,
             log_config=UVICORN_LOGGING_CONFIG,
         )

@@ -401,6 +401,26 @@ npx -y supergateway --stdio "uvx mcp-server-motherduck --db-path md: --motherduc
 
 Both methods allow you to point your clients such as Claude Desktop, Cursor to the SSE endpoint.
 
+## Deploying on Render.com
+
+Render requires binding to 0.0.0.0 and listening on the port provided via the PORT environment variable. Configure your Web Service as follows:
+
+- Build command: `pip install .`
+- Start command:
+
+```bash
+python -m mcp_server_motherduck --transport stream --host 0.0.0.0 --port $PORT
+```
+
+Notes:
+
+- The stream transport serves the HTTP endpoint at `/mcp`. Render’s health check can target `/mcp` (a 405 for GET is acceptable).
+- Alternatively, SSE transport is available at `/sse`:
+
+```bash
+python -m mcp_server_motherduck --transport sse --host 0.0.0.0 --port $PORT
+```
+
 ## Development configuration
 
 To run the server from a local development environment, use the following configuration:
