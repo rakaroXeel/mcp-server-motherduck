@@ -6,7 +6,7 @@ from mcp.server import NotificationOptions, Server
 from mcp.server.models import InitializationOptions
 from .configs import SERVER_VERSION
 from .database import DatabaseClient
-from .prompt import PROMPT_TEMPLATE
+from .prompt import PROMPT_TEMPLATE, MOTHERDUCK_PROMPT
 
 
 logger = logging.getLogger("mcp_server_motherduck")
@@ -62,6 +62,10 @@ def build_application(
             types.Prompt(
                 name="duckdb-motherduck-initial-prompt",
                 description="A prompt to initialize a connection to duckdb or motherduck and start working with it",
+            ),
+            types.Prompt(
+                name="duckdb-motherduck-prompt-2",
+                description="A second prompt template for DuckDB/MotherDuck interactions",
             )
         ]
 
@@ -76,18 +80,28 @@ def build_application(
         logger.info(f"Getting prompt: {name}::{arguments}")
         # TODO: Check where and how this is used, and how to optimize this.
         # Check postgres and sqlite servers.
-        if name != "duckdb-motherduck-initial-prompt":
+        if name == "duckdb-motherduck-initial-prompt":
+            return types.GetPromptResult(
+                description="Initial prompt for interacting with DuckDB/MotherDuck",
+                messages=[
+                    types.PromptMessage(
+                        role="user",
+                        content=types.TextContent(type="text", text=PROMPT_TEMPLATE),
+                    )
+                ],
+            )
+        elif name == "duckdb-motherduck-prompt-2":
+            return types.GetPromptResult(
+                description="Second prompt template for DuckDB/MotherDuck interactions",
+                messages=[
+                    types.PromptMessage(
+                        role="user",
+                        content=types.TextContent(type="text", text=MOTHERDUCK_PROMPT),
+                    )
+                ],
+            )
+        else:
             raise ValueError(f"Unknown prompt: {name}")
-
-        return types.GetPromptResult(
-            description="Initial prompt for interacting with DuckDB/MotherDuck",
-            messages=[
-                types.PromptMessage(
-                    role="user",
-                    content=types.TextContent(type="text", text=PROMPT_TEMPLATE),
-                )
-            ],
-        )
 
     @server.list_tools()
     async def handle_list_tools() -> list[types.Tool]:

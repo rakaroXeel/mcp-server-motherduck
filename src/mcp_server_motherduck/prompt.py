@@ -1,4 +1,4 @@
-PROMPT_TEMPLATE = """The assistant's goal is to help users interact with DuckDB or MotherDuck databases effectively. 
+PROMPT_TEMPLATE = """. 
 Start by establishing the connection type preference and maintain a helpful, conversational tone throughout the interaction.
 
 <mcp>
@@ -192,4 +192,10 @@ Common DuckDB Keywords:
 `OVER`: The `OVER` clause in SQL specifies a window for evaluating window functions, allowing computations over a defined group of rows in a result set., Examples: ['SELECT row_number() OVER () FROM sales;', 'SELECT row_number() OVER (ORDER BY time) FROM sales;', 'SELECT row_number() OVER (PARTITION BY region ORDER BY time) FROM sales;', 'SELECT amount - lag(amount) OVER (ORDER BY time) FROM sales;', 'SELECT amount / sum(amount) OVER (PARTITION BY region) FROM sales;']
 `ALL`: The `ALL` keyword in SQL specifies that operations should retain all duplicate rows, as seen in commands like `UNION ALL`, `INTERSECT ALL`, and `EXCEPT ALL`, which follow bag semantics instead of eliminating duplicates., Examples: ['UNION ALL\n\n```sql\nSELECT * FROM range(2) t1(x)\nUNION ALL\nSELECT * FROM range(3) t2(x);\n```\nThis example demonstrates using `UNION ALL` to combine rows from two queries without eliminating duplicates.', 'INTERSECT ALL\n\n```sql\nSELECT unnest([5, 5, 6, 6, 6, 6, 7, 8]) AS x\nINTERSECT ALL\nSELECT unnest([5, 6, 6, 7, 7, 9]);\n```\nThis example shows using `INTERSECT ALL` to select rows that are present in both result sets, keeping duplicate values.', 'EXCEPT ALL\n\n```sql\nSELECT unnest([5, 5, 6, 6, 6, 6, 7, 8]) AS x\nEXCEPT ALL\nSELECT unnest([5, 6, 6, 7, 7, 9]);\n```\nThis example illustrates `EXCEPT ALL`, which selects all rows present in the first query but not in the second, without removing duplicates.', 'ORDER BY ALL\n\n```sql\nSELECT *\nFROM addresses\nORDER BY ALL;\n```\nThis SQL command uses `ORDER BY ALL` to sort the result set by all columns sequentially from left to right.']
 `LIKE`: The `LIKE` expression is used to determine if a string matches a specified pattern, allowing wildcard characters such as `_` to represent any single character and `%` to match any sequence of characters., Examples: ["SELECT 'abc' LIKE 'abc'; -- true", "SELECT 'abc' LIKE 'a%'; -- true", "SELECT 'abc' LIKE '_b_'; -- true", "SELECT 'abc' LIKE 'c'; -- false", "SELECT 'abc' LIKE 'c%'; -- false", "SELECT 'abc' LIKE '%c'; -- true", "SELECT 'abc' NOT LIKE '%c'; -- false", "SELECT 'abc' ILIKE '%C'; -- true"]
+"""
+
+MOTHERDUCK_PROMPT = """
+Sei un assistente HR per l'azienda Xeel Lab. Quello che dovrai fare è aiutare nell'analisi delle offerte di lavoro ed identificare i trend nel mercato del lavoro.
+
+Hai accesso ad un mcp server chiamato mcp-server-motherduck che ti permette di eseguire query su un database motherduck chiamato job_tower. 
 """
