@@ -201,8 +201,52 @@ Hai accesso ad un mcp server chiamato mcp-server-motherduck che ti permette di e
 
 # Struttura Dati
 Avrai accesso alle tabelle 
-1) job_offers: contiene le offerte di lavoro 
+1) job_offers: contiene le offerte di lavoro
+Le sue colonne sono:
+- url - VARCHAR (URL dell'offerta di lavoro)
+- job_posting_id - BIGINT (ID univoco dell'offerta di lavoro)
+- job_title - VARCHAR (Titolo dell'offerta di lavoro)
+- company_name - VARCHAR (Nome della società che ha pubblicato l'offerta di lavoro)
+- company_id - DOUBLE (ID univoco della società che ha pubblicato l'offerta di lavoro)
+- job_location - VARCHAR (Luogo dell'offerta di lavoro)
+- job_summary - VARCHAR (Sommario dell'offerta di lavoro)
+- job_seniority_level - VARCHAR (Livello di seniorità dell'offerta di lavoro)
+- job_function - VARCHAR (Funzione dell'offerta di lavoro)
+- job_employment_type - VARCHAR (Tipo di contratto dell'offerta di lavoro)
+- job_industries - VARCHAR (Industria dell'offerta di lavoro)
+- job_base_pay_range - VARCHAR (Range della retribuzione di base dell'offerta di lavoro)
+- job_num_applicants - BIGINT (Numero di candidati per l'offerta di lavoro)
+- discovery_input - VARCHAR (parametri di filtro avanzati per la ricerca utilizzati durante lo scraping delle offerte su LinkedIn)
+- country_code - VARCHAR (Codice del paese dell'offerta di lavoro)
+- title_id - DOUBLE (ID univoco del titolo dell'offerta di lavoro)
+- job_posted_date - TIMESTAMP WITH TIME ZONE (Data di pubblicazione dell'offerta di lavoro)
+- job_poster - VARCHAR (Nome dell'utente che ha pubblicato l'offerta di lavoro)
+- application_availability - BOOLEAN (Indica se l'offerta di lavoro è ancora disponibile)
+- job_description_formatted - VARCHAR (Descrizione dell'offerta di lavoro formattata in Html)
+- selective_search - VARCHAR 
+- base_salary - VARCHAR (Retribuzione di base dell'offerta di lavoro)
+- salary_standards - VARCHAR (Standard di retribuzione dell'offerta di lavoro, ovvero da cosa si calcola il range di retribuzione)
+- job_offer_month - BIGINT (Mese di pubblicazione dell'offerta di lavoro)
+- job_offer_month_name - VARCHAR (Nome del mese di pubblicazione dell'offerta di lavoro)
+- error_message - DOUBLE (Messaggio di errore)
+- technologies_joined - VARCHAR (Tecnologie unite dell'offerta di lavoro)
+- normalized_title - VARCHAR (Titolo normalizzato dell'offerta di lavoro)
+- topics - VARCHAR (Argomenti dell'offerta di lavoro)
+- seniority - VARCHAR (Livello di seniorità dell'offerta di lavoro)
+- programming_languages_joined - VARCHAR (Tecnologie unite dell'offerta di lavoro)
+- title_raw - VARCHAR (Titolo dell'offerta di lavoro originale)
+- programming_languages - VARCHAR (Tecnologie unite dell'offerta di lavoro)
+- failure - BOOLEAN (Indica se ci sono stati errori nell'analisi dell'offerta di lavoro)
+- providers_platforms - VARCHAR (Piattaforme di richieste nell'offerta di lavoro)
+- technologies - VARCHAR (Tecnologie menzionate nell'offerta di lavoro)
+- role_primary - VARCHAR (Ruolo primario dell'offerta di lavoro)
+- providers_platforms_joined - VARCHAR (Piattaforme di richieste unite dell'offerta di lavoro)
+- topics_joined - VARCHAR (Argomenti unite dell'offerta di lavoro)
 2) job_offers_it_related: contiene una coppia di job_posting_id e it_related (true/false). 
+Le sue colonne sono:
+- job_posting_id - BIGINT (ID univoco dell'offerta di lavoro)
+- it_related - BOOLEAN (Indica se l'offerta di lavoro è IT-related o no)
+
 Questa tabella è usata per identificare se un'offerta di lavoro è IT-related o no, it_related è true se l'offerta di lavoro è IT-related, false altrimenti.
 
 Le due tabelle sono collegate tramite la colonna job_posting_id.
