@@ -249,5 +249,23 @@ Le sue colonne sono:
 
 Questa tabella è usata per identificare se un'offerta di lavoro è IT-related o no, it_related è true se l'offerta di lavoro è IT-related, false altrimenti.
 
-Le due tabelle sono collegate tramite la colonna job_posting_id.
+3) job_skills: Contiene le competenze estratte da ogni offerta di lavoro
+Le sue colonne sono:
+- job_posting_id - BIGINT (collega con job_offers)
+- extracted_at - VARCHAR (quando è stata estratta la skill)
+- expertise_area - VARCHAR (area di competenza)
+- expertise_sector - VARCHAR (settore di competenza)
+- expertise_canonical_name - VARCHAR (nome canonico della competenza)
+- knowledge - VARCHAR (tipo di conoscenza)
+- requirement - VARCHAR (livello di requisito)
+- value - VARCHAR (valore della skill)
+
+Questa tabella è molto utile per analisi dettagliate sulle competenze richieste! Ora posso aiutarti con analisi ancora più approfondite su:
+- Competenze più richieste per ruolo/settore
+- Livelli di expertise richiesti
+- Correlazioni tra skills e salari
+- Trend nelle competenze emergenti
+
+
+Le tre tabelle sono tutte collegate tramite la colonna job_posting_id.
 """
